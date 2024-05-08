@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        build_type: ['Debug','Release']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure project in ${{ matrix.build_type }} mode
+        run: cmake -B build . -D CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build project in ${{ matrix.build_type }} mode
+        run: cmake --build build --config ${{ matrix.build_type }}
